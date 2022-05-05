@@ -60,7 +60,7 @@ table {
   box-sizing: border-box;
 }
 body {
-  color: ${(props) => props.theme.textColor};
+  color: #000;
   background-color: ${(props) => props.theme.bgColor};
   font-family: 'Source Sans Pro', sans-serif;
 }

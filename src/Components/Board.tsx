@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
+import { ITodo } from "../atom";
 
 const Wrapper = styled.div`
   display: flex;
@@ -33,26 +34,38 @@ const Area = styled.div<IAreaProps>`
   transition: background-color 0.3s ease-in-out;
 `;
 
+const Form = styled.form`
+  width: 100%;
+  input {
+    width: 100%;
+  }
+`;
+
 interface IBoardProps {
-  toDos: string[];
+  toDos: ITodo[];
   boardId: string;
 }
 
+interface IForm {
+  toDo: string;
+}
+
 function Board({ toDos, boardId }: IBoardProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const onClick = () => {
-    inputRef.current?.focus();
+  const { register, setValue, handleSubmit } = useForm<IForm>();
+  const onValid = ({ toDo }: IForm) => {
+    setValue("toDo", "");
   };
   return (
     <Wrapper>
       <Title>{boardId}</Title>
-      <input type="text" ref={inputRef} placeholder="input test" />
-      <button onClick={onClick}>click me</button>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input {...register("toDo", { required: true })} type="text" placeholder={`Add task on ${boardId}`} />
+      </Form>
       <Droppable droppableId={boardId}>
         {(provided, snapshot) => (
           <Area ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)} {...provided.droppableProps}>
             {toDos.map((toDo, index) => (
-              <DraggableCard key={toDo} index={index} toDo={toDo} />
+              <DraggableCard key={toDo.id} index={index} toDoId={toDo.id} toDoText={toDo.text} />
             ))}
             {provided.placeholder}
           </Area>

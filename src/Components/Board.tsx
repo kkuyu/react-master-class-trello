@@ -22,6 +22,9 @@ const Title = styled.h2`
   font-size: 18px;
   font-weight: 600;
   background-color: ${(props) => props.theme.titleColor};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Form = styled.form`

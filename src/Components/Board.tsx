@@ -6,41 +6,52 @@ import DraggableCard from "./DraggableCard";
 import { ITodo, toDoState, IToDoState } from "../atom";
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+  flex: 0 0 auto;
   width: 300px;
-  padding-top: 10px;
   background-color: ${(props) => props.theme.boardColor};
-  border-radius: 5px;
-  min-height: 300px;
+  border: 3px solid ${(props) => props.theme.lineColor};
+  border-radius: 8px;
   overflow: hidden;
+  & + & {
+    margin-left: 16px;
+  }
 `;
 
 const Title = styled.h2`
-  text-align: center;
-  font-weight: 600;
-  margin-bottom: 10px;
+  padding: 16px 20px;
   font-size: 18px;
+  font-weight: 600;
+  background-color: ${(props) => props.theme.titleColor};
+`;
+
+const Form = styled.form`
+  width: 100%;
+  padding: 16px 20px 10px 20px;
+  input {
+    width: 100%;
+    height: 30px;
+    font-size: 14px;
+    line-height: 30px;
+    border: none;
+    border-bottom: 3px solid ${(props) => props.theme.lineColor};
+    background-color: transparent;
+    &:focus {
+      outline: 0;
+    }
+  }
+`;
+
+const Area = styled.div<IAreaProps>`
+  background-color: ${(props) => (props.isDraggingOver ? props.theme.boardOverColor : props.isDraggingFromThis ? props.theme.boardDraggingColor : "transparent")};
+  flex-grow: 1;
+  padding: 10px 20px 20px;
+  transition: background-color 0.3s ease-in-out;
 `;
 
 interface IAreaProps {
   isDraggingFromThis: boolean;
   isDraggingOver: boolean;
 }
-
-const Area = styled.div<IAreaProps>`
-  background-color: ${(props) => (props.isDraggingOver ? "#dfe6e9" : props.isDraggingFromThis ? "#b2bec3" : "transparent")};
-  flex-grow: 1;
-  padding: 20px;
-  transition: background-color 0.3s ease-in-out;
-`;
-
-const Form = styled.form`
-  width: 100%;
-  input {
-    width: 100%;
-  }
-`;
 
 interface IBoardProps {
   toDos: ITodo[];

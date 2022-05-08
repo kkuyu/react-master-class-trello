@@ -2,8 +2,11 @@ import { useForm } from "react-hook-form";
 import { Droppable } from "react-beautiful-dnd";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import DraggableCard from "./DraggableCard";
+
 import { IToDoInfo, IToDoItems, IToDoState, toDoState } from "../atom";
+
+import DraggableCard from "./DraggableCard";
+import BoardTitle from "./BoardTitle";
 
 const Wrapper = styled.div`
   width: 300px;
@@ -11,16 +14,6 @@ const Wrapper = styled.div`
   border: 3px solid ${(props) => props.theme.lineColor};
   border-radius: 8px;
   overflow: hidden;
-`;
-
-const Title = styled.h2`
-  padding: 16px 20px;
-  font-size: 18px;
-  font-weight: 600;
-  background-color: ${(props) => props.theme.titleColor};
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `;
 
 const Form = styled.form`
@@ -32,11 +25,9 @@ const Form = styled.form`
     font-size: 14px;
     line-height: 30px;
     border: none;
+    outline: 0;
     border-bottom: 3px solid ${(props) => props.theme.lineColor};
     background-color: transparent;
-    &:focus {
-      outline: 0;
-    }
   }
 `;
 
@@ -59,14 +50,14 @@ interface IBoardProps {
   boardItems: IToDoItems[];
 }
 
-interface IForm {
+interface IFormTask {
   toDo: string;
 }
 
 function Board({ boardInfo, boardItems }: IBoardProps) {
   const setToDos = useSetRecoilState(toDoState);
-  const { register, setValue, handleSubmit } = useForm<IForm>();
-  const onValid = ({ toDo }: IForm) => {
+  const { register, setValue, handleSubmit } = useForm<IFormTask>();
+  const onValid = ({ toDo }: IFormTask) => {
     const newToDo = {
       id: Date.now(),
       text: toDo,
@@ -85,7 +76,7 @@ function Board({ boardInfo, boardItems }: IBoardProps) {
   };
   return (
     <Wrapper>
-      <Title>{boardInfo.title}</Title>
+      <BoardTitle title={boardInfo.title} />
       <Form onSubmit={handleSubmit(onValid)}>
         <input {...register("toDo", { required: true })} type="text" placeholder={`Add task on ${boardInfo.title}`} />
       </Form>

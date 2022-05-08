@@ -62,7 +62,9 @@ table {
 body {
   color: #000;
   background-color: ${(props) => props.theme.bgColor};
-  font-family: 'Source Sans Pro', sans-serif;
+  &, input, button {
+    font-family: 'Source Sans Pro', sans-serif;
+  }
 }
 a {
   color: inherit;

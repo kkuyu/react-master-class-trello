@@ -5,9 +5,11 @@ import styled from "styled-components";
 const Card = styled.div<{ isDragging: boolean }>`
   padding: 14px;
   font-size: 14px;
-  line-height: 1.4;
   color: #ffffff;
   background-color: ${(props) => (props.isDragging ? "#e4f2ff" : props.theme.cardColor)};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   border-radius: 4px;
   & + & {
     margin-top: 8px;

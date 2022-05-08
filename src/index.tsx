@@ -68,6 +68,12 @@ a {
   color: inherit;
   text-decoration: none;
 }
+#root {
+  display: flex;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
 `;
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLDivElement);

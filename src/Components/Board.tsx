@@ -3,18 +3,14 @@ import { Droppable } from "react-beautiful-dnd";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import DraggableCard from "./DraggableCard";
-import { ITodo, toDoState, IToDoState } from "../atom";
+import { IToDoInfo, IToDoItems, IToDoState, toDoState } from "../atom";
 
 const Wrapper = styled.div`
-  flex: 0 0 auto;
   width: 300px;
   background-color: ${(props) => props.theme.boardColor};
   border: 3px solid ${(props) => props.theme.lineColor};
   border-radius: 8px;
   overflow: hidden;
-  & + & {
-    margin-left: 16px;
-  }
 `;
 
 const Title = styled.h2`
@@ -45,10 +41,12 @@ const Form = styled.form`
 `;
 
 const Area = styled.div<IAreaProps>`
-  background-color: ${(props) => (props.isDraggingOver ? props.theme.boardOverColor : props.isDraggingFromThis ? props.theme.boardDraggingColor : "transparent")};
   flex-grow: 1;
+  max-height: 55vh;
   padding: 10px 20px 20px;
+  background-color: ${(props) => (props.isDraggingOver ? props.theme.boardOverColor : props.isDraggingFromThis ? props.theme.boardDraggingColor : "transparent")};
   transition: background-color 0.3s ease-in-out;
+  overflow-y: auto;
 `;
 
 interface IAreaProps {
@@ -57,15 +55,15 @@ interface IAreaProps {
 }
 
 interface IBoardProps {
-  toDos: ITodo[];
-  boardId: string;
+  boardInfo: IToDoInfo;
+  boardItems: IToDoItems[];
 }
 
 interface IForm {
   toDo: string;
 }
 
-function Board({ toDos, boardId }: IBoardProps) {
+function Board({ boardInfo, boardItems }: IBoardProps) {
   const setToDos = useSetRecoilState(toDoState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
   const onValid = ({ toDo }: IForm) => {
@@ -74,23 +72,27 @@ function Board({ toDos, boardId }: IBoardProps) {
       text: toDo,
     };
     setToDos((allBoards: IToDoState) => {
-      return {
-        ...allBoards,
-        [boardId]: [newToDo, ...allBoards[boardId]],
-      };
+      return allBoards.map((data) => {
+        if (data.info.title === boardInfo.title) {
+          const temp = [...data.items];
+          temp.push(newToDo);
+          return { ...data, items: temp };
+        }
+        return data;
+      });
     });
     setValue("toDo", "");
   };
   return (
     <Wrapper>
-      <Title>{boardId}</Title>
+      <Title>{boardInfo.title}</Title>
       <Form onSubmit={handleSubmit(onValid)}>
-        <input {...register("toDo", { required: true })} type="text" placeholder={`Add task on ${boardId}`} />
+        <input {...register("toDo", { required: true })} type="text" placeholder={`Add task on ${boardInfo.title}`} />
       </Form>
-      <Droppable droppableId={boardId}>
+      <Droppable droppableId={boardInfo.title}>
         {(provided, snapshot) => (
           <Area ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)} {...provided.droppableProps}>
-            {toDos.map((toDo, index) => (
+            {boardItems.map((toDo, index) => (
               <DraggableCard key={toDo.id} index={index} toDoId={toDo.id} toDoText={toDo.text} />
             ))}
             {provided.placeholder}

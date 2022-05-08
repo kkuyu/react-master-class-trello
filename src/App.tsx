@@ -1,8 +1,11 @@
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+
 import { toDoState } from "./atom";
+
 import Board from "./Components/Board";
+import BoardCreator from "./Components/BoardCreator";
 
 const TrelloContainer = styled.div`
   display: flex;
@@ -54,18 +57,21 @@ function App() {
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="trello" type="trello" direction="horizontal">
         {(provided, snapshot) => (
-          <TrelloContainer ref={provided.innerRef} {...provided.droppableProps}>
-            {toDos.map((boardData, index) => (
-              <Draggable draggableId={`trello${index}`} index={index} key={`trello${index}`}>
-                {(provided) => (
-                  <TrelloWrapper ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                    <Board boardInfo={boardData.info} boardItems={boardData.items} key={boardData.info.title} />
-                  </TrelloWrapper>
-                )}
-              </Draggable>
-            ))}
-            {provided.placeholder}
-          </TrelloContainer>
+          <>
+            <BoardCreator />
+            <TrelloContainer ref={provided.innerRef} {...provided.droppableProps}>
+              {toDos.map((boardData, index) => (
+                <Draggable draggableId={`trello${index}`} index={index} key={`trello${index}`}>
+                  {(provided) => (
+                    <TrelloWrapper ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                      <Board boardInfo={boardData.info} boardItems={boardData.items} key={boardData.info.title} />
+                    </TrelloWrapper>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </TrelloContainer>
+          </>
         )}
       </Droppable>
     </DragDropContext>

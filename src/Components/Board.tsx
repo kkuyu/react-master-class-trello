@@ -29,15 +29,24 @@ const Form = styled.form`
     border-bottom: 3px solid ${(props) => props.theme.lineColor};
     background-color: transparent;
   }
+  input::placeholder {
+    color: ${(props) => props.theme.inputColor};
+  }
 `;
 
 const Area = styled.div<IAreaProps>`
   flex-grow: 1;
-  max-height: 55vh;
   padding: 10px 20px 20px;
   background-color: ${(props) => (props.isDraggingOver ? props.theme.boardOverColor : props.isDraggingFromThis ? props.theme.boardDraggingColor : "transparent")};
   transition: background-color 0.3s ease-in-out;
-  overflow-y: auto;
+`;
+
+const EmptyText = styled.span`
+  display: block;
+  padding: 14px;
+  font-size: 14px;
+  text-align: center;
+  color: ${(props) => props.theme.inputColor};
 `;
 
 interface IAreaProps {
@@ -56,12 +65,15 @@ interface IFormTask {
 
 function Board({ boardInfo, boardItems }: IBoardProps) {
   const setToDos = useSetRecoilState(toDoState);
+
   const { register, setValue, handleSubmit } = useForm<IFormTask>();
+
   const onValid = ({ toDo }: IFormTask) => {
     const newToDo = {
       id: Date.now(),
       text: toDo,
     };
+
     setToDos((allBoards: IToDoState) => {
       return allBoards.map((data) => {
         if (data.info.title === boardInfo.title) {
@@ -72,6 +84,7 @@ function Board({ boardInfo, boardItems }: IBoardProps) {
         return data;
       });
     });
+
     setValue("toDo", "");
   };
   return (
@@ -83,6 +96,7 @@ function Board({ boardInfo, boardItems }: IBoardProps) {
       <Droppable droppableId={boardInfo.title}>
         {(provided, snapshot) => (
           <Area ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)} {...provided.droppableProps}>
+            {!boardItems.length && <EmptyText>Complete:&#41;</EmptyText>}
             {boardItems.map((toDo, index) => (
               <DraggableCard key={toDo.id} index={index} toDoId={toDo.id} toDoText={toDo.text} />
             ))}

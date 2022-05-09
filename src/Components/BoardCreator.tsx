@@ -20,12 +20,13 @@ const Form = styled.form`
   input {
     width: 100%;
     height: 40px;
+    padding: 0;
     font-size: 22px;
     line-height: 40px;
     border: none;
     outline: 0;
     border-bottom: 3px solid ${(props) => props.theme.lineColor};
-    background-color: transparent;
+    background: none;
   }
 `;
 

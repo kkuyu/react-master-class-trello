@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useForm } from "react-hook-form";
 
 import { ReactComponent as IconDelete } from "../assets/images/icon_delete.svg";
 import { useRecoilState } from "recoil";
 import { toDoState } from "../atom";
 
 const Title = styled.h2`
+  position: relative;
   display: flex;
-  justify-content: space-between;
-  padding: 16px 20px;
+  padding: 16px 50px 14px 20px;
   color: ${(props) => props.theme.lineColor};
   background-color: ${(props) => props.theme.titleColor};
   span {
@@ -23,8 +21,12 @@ const Title = styled.h2`
 `;
 
 const Util = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
   button {
-    padding: 0;
+    padding: 6px;
     background: none;
     border: none;
     cursor: pointer;
@@ -51,7 +53,7 @@ function BoardTitle({ title }: IBoardTitle) {
     <Title>
       <span>{title}</span>
       <Util>
-        <button onClick={onDelete}>
+        <button type="button" onClick={onDelete}>
           <IconDelete width="15" height="18" fill="#1E272E" role="img" aria-labelledby="delete" />
         </button>
       </Util>

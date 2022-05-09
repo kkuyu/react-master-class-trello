@@ -1,8 +1,9 @@
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
+import { toDoState } from "../@core/atom";
+
 import { ReactComponent as IconDelete } from "../assets/images/icon_delete.svg";
-import { useRecoilState } from "recoil";
-import { toDoState } from "../atom";
 
 const Title = styled.h2`
   position: relative;
@@ -42,7 +43,7 @@ interface IBoardTitle {
 }
 
 function BoardTitle({ title }: IBoardTitle) {
-  const [toDos, setToDos] = useRecoilState(toDoState);
+  const setToDos = useSetRecoilState(toDoState);
 
   const onDelete = () => {
     setToDos((allBoards) => {

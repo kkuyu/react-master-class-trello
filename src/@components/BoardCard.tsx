@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Draggable } from "react-beautiful-dnd";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
-import { useRecoilState } from "recoil";
-import { toDoState } from "../atom";
+import { toDoState } from "../@core/atom";
+
 import { ReactComponent as IconEdit } from "../assets/images/icon_edit.svg";
 import { ReactComponent as IconXmark } from "../assets/images/icon_xmark.svg";
 import { ReactComponent as IconDelete } from "../assets/images/icon_delete.svg";
@@ -61,7 +62,7 @@ const Form = styled.form`
   }
 `;
 
-interface IDraggableCardProps {
+interface IBoardCardProps {
   toDoId: number;
   toDoText: string;
   index: number;
@@ -71,8 +72,8 @@ interface IFormEdit {
   newText: string;
 }
 
-function DraggableCard({ toDoId, toDoText, index }: IDraggableCardProps) {
-  const [toDos, setToDos] = useRecoilState(toDoState);
+function BoardCard({ toDoId, toDoText, index }: IBoardCardProps) {
+  const setToDos = useSetRecoilState(toDoState);
   const [isEdit, setIsEdit] = useState(false);
 
   const { register, setValue, setFocus, handleSubmit } = useForm<IFormEdit>();
@@ -161,4 +162,4 @@ function DraggableCard({ toDoId, toDoText, index }: IDraggableCardProps) {
   );
 }
 
-export default React.memo(DraggableCard);
+export default React.memo(BoardCard);

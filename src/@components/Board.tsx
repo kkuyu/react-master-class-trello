@@ -3,9 +3,9 @@ import { Droppable } from "react-beautiful-dnd";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 
-import { IToDoInfo, IToDoItems, IToDoState, toDoState } from "../atom";
+import { IToDoInfo, IToDoItems, IToDoState, toDoState } from "../@core/atom";
 
-import DraggableCard from "./DraggableCard";
+import BoardCard from "./BoardCard";
 import BoardTitle from "./BoardTitle";
 
 const Wrapper = styled.div`
@@ -96,9 +96,11 @@ function Board({ boardInfo, boardItems }: IBoardProps) {
       <Droppable droppableId={boardInfo.title} type="card">
         {(provided, snapshot) => (
           <Area ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)} {...provided.droppableProps}>
+            {/* {Empty} */}
             {!boardItems.length && <EmptyText>Complete:&#41;</EmptyText>}
+            {/* {List} */}
             {boardItems.map((toDo, index) => (
-              <DraggableCard key={toDo.id} index={index} toDoId={toDo.id} toDoText={toDo.text} />
+              <BoardCard key={toDo.id} index={index} toDoId={toDo.id} toDoText={toDo.text} />
             ))}
             {provided.placeholder}
           </Area>

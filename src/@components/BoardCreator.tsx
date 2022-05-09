@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 
-import { IToDoState, toDoState } from "../atom";
+import { IToDoState, toDoState } from "../@core/atom";
 
 const Wrapper = styled.div`
   display: flex;

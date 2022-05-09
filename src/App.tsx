@@ -3,11 +3,11 @@ import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautif
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 
-import { toDoState } from "./atom";
+import { toDoState } from "./@core/atom";
 
-import Board from "./Components/Board";
-import BoardCreator from "./Components/BoardCreator";
-import TrashBin from "./Components/TrashBin";
+import Board from "./@components/Board";
+import BoardCreator from "./@components/BoardCreator";
+import TrashBin from "./@components/TrashBin";
 
 const TrelloContainer = styled.div`
   display: flex;

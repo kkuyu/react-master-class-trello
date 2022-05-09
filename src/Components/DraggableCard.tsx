@@ -13,9 +13,10 @@ const Card = styled.div<{ isDragging: boolean; isEdit: boolean }>`
   position: relative;
   display: flex;
   padding: 12px ${(props) => (props.isEdit ? "40px" : "70px")} 10px 12px;
-  background-color: ${(props) => (props.isDragging ? "#e4f2ff" : props.isEdit ? props.theme.boardColor : props.theme.cardColor)};
+  background-color: ${(props) => (props.isEdit ? props.theme.boardColor : props.theme.cardColor)};
   border: 2px solid ${(props) => (props.isEdit ? props.theme.cardColor : props.theme.boardColor)};
   border-radius: 6px;
+  opacity: ${(props) => (props.isDragging ? 0.5 : 1)};
   span,
   input {
     font-size: 14px;
@@ -24,6 +25,9 @@ const Card = styled.div<{ isDragging: boolean; isEdit: boolean }>`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  svg {
+    fill: ${(props) => (props.isEdit ? props.theme.cardColor : props.theme.boardColor)};
   }
   & + & {
     margin-top: 8px;
@@ -123,37 +127,35 @@ function DraggableCard({ toDoId, toDoText, index }: IDraggableCardProps) {
   return (
     <Draggable key={toDoId} draggableId={toDoId.toString()} index={index}>
       {(provided, snapshot) => (
-        <>
+        <Card ref={provided.innerRef} isEdit={isEdit} isDragging={snapshot.isDragging} {...provided.dragHandleProps} {...provided.draggableProps}>
+          {/* {isEdit} */}
           {isEdit && (
             <>
-              <Card ref={provided.innerRef} isDragging={snapshot.isDragging} isEdit={isEdit} {...provided.dragHandleProps} {...provided.draggableProps}>
-                <Form onSubmit={handleSubmit(onValid)}>
-                  <input {...register("newText", { required: true })} type="text" />
-                </Form>
-                <Util>
-                  <button type="reset" onClick={onCancel}>
-                    <IconXmark width="15" height="18" fill="#1E272E" role="img" aria-labelledby="edit" />
-                  </button>
-                </Util>
-              </Card>
+              <Form onSubmit={handleSubmit(onValid)}>
+                <input {...register("newText", { required: true })} type="text" />
+              </Form>
+              <Util>
+                <button type="reset" onClick={onCancel}>
+                  <IconXmark width="15" height="18" role="img" aria-labelledby="edit" />
+                </button>
+              </Util>
             </>
           )}
+          {/* {!isEdit} */}
           {!isEdit && (
             <>
-              <Card ref={provided.innerRef} isDragging={snapshot.isDragging} isEdit={isEdit} {...provided.dragHandleProps} {...provided.draggableProps}>
-                <span>{toDoText}</span>
-                <Util>
-                  <button type="button" onClick={onEdit}>
-                    <IconEdit width="15" height="18" fill="#FFFFFF" role="img" aria-labelledby="edit" />
-                  </button>
-                  <button type="button" onClick={onDelete}>
-                    <IconDelete width="15" height="18" fill="#FFFFFF" role="img" aria-labelledby="delete" />
-                  </button>
-                </Util>
-              </Card>
+              <span>{toDoText}</span>
+              <Util>
+                <button type="button" onClick={onEdit}>
+                  <IconEdit width="15" height="18" role="img" aria-labelledby="edit" />
+                </button>
+                <button type="button" onClick={onDelete}>
+                  <IconDelete width="15" height="18" role="img" aria-labelledby="delete" />
+                </button>
+              </Util>
             </>
           )}
-        </>
+        </Card>
       )}
     </Draggable>
   );

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { DragDropContext, Draggable, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -6,6 +7,7 @@ import { toDoState } from "./atom";
 
 import Board from "./Components/Board";
 import BoardCreator from "./Components/BoardCreator";
+import TrashBin from "./Components/TrashBin";
 
 const TrelloContainer = styled.div`
   display: flex;
@@ -21,13 +23,23 @@ const TrelloWrapper = styled.div`
 `;
 
 function App() {
+  const [isTrashBinShow, setIsTrashBinShow] = useState(false);
   const [toDos, setToDos] = useRecoilState(toDoState);
 
-  const onDragEnd = ({ draggableId, destination, source }: DropResult) => {
-    if (!destination) return;
+  const onDragStart = ({ type }: DropResult) => {
+    if (type === "card") {
+      setIsTrashBinShow(true);
+    }
+  };
+
+  const onDragEnd = ({ destination, source, type }: DropResult) => {
+    if (!destination) {
+      setIsTrashBinShow(false);
+      return;
+    }
+
     // Trello
-    const isMovedTrello = draggableId.indexOf("trello") === 0;
-    if (isMovedTrello) {
+    if (type === "trello") {
       setToDos((allBoards) => {
         const temp = [...allBoards];
         const task = temp[source.index];
@@ -37,28 +49,46 @@ function App() {
       });
       return;
     }
-    // Board
-    setToDos((allBoards) => {
-      const task = allBoards.find((data) => data.info.title === source.droppableId)!.items[source.index];
-      return allBoards.map((data) => {
-        const temp = [...data.items];
-        if (data.info.title === source.droppableId) {
-          temp.splice(source.index, 1);
-        }
-        if (data.info.title === destination.droppableId) {
-          temp.splice(destination?.index, 0, task);
-        }
-        return { ...data, items: temp };
+
+    // Card + TrashBin
+    if (type === "card" && destination.droppableId === "trashBin") {
+      setToDos((allBoards) => {
+        return allBoards.map((data) => {
+          const temp = [...data.items];
+          if (data.info.title === source.droppableId) {
+            temp.splice(source.index, 1);
+          }
+          return { ...data, items: temp };
+        });
       });
-    });
+      setIsTrashBinShow(false);
+      return;
+    }
+
+    // Card
+    if (type === "card") {
+      setToDos((allBoards) => {
+        const task = allBoards.find((data) => data.info.title === source.droppableId)!.items[source.index];
+        return allBoards.map((data) => {
+          const temp = [...data.items];
+          if (data.info.title === source.droppableId) {
+            temp.splice(source.index, 1);
+          }
+          if (data.info.title === destination.droppableId) {
+            temp.splice(destination?.index, 0, task);
+          }
+          return { ...data, items: temp };
+        });
+      });
+    }
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+      <BoardCreator />
       <Droppable droppableId="trello" type="trello" direction="horizontal">
         {(provided, snapshot) => (
           <>
-            <BoardCreator />
             <TrelloContainer ref={provided.innerRef} {...provided.droppableProps}>
               {toDos.map((boardData, index) => (
                 <Draggable draggableId={`trello${index}`} index={index} key={`trello${index}`}>
@@ -74,6 +104,7 @@ function App() {
           </>
         )}
       </Droppable>
+      <TrashBin isShow={isTrashBinShow} />
     </DragDropContext>
   );
 }

@@ -93,7 +93,7 @@ function Board({ boardInfo, boardItems }: IBoardProps) {
       <Form onSubmit={handleSubmit(onValid)}>
         <input {...register("toDo", { required: true })} type="text" placeholder={`Add task on ${boardInfo.title}`} />
       </Form>
-      <Droppable droppableId={boardInfo.title}>
+      <Droppable droppableId={boardInfo.title} type="card">
         {(provided, snapshot) => (
           <Area ref={provided.innerRef} isDraggingOver={snapshot.isDraggingOver} isDraggingFromThis={Boolean(snapshot.draggingFromThisWith)} {...provided.droppableProps}>
             {!boardItems.length && <EmptyText>Complete:&#41;</EmptyText>}

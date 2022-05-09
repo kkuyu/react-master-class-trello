@@ -33,6 +33,7 @@ const Util = styled.div`
   }
   svg {
     display: block;
+    fill: ${(props) => props.theme.lineColor};
   }
 `;
 
@@ -54,7 +55,7 @@ function BoardTitle({ title }: IBoardTitle) {
       <span>{title}</span>
       <Util>
         <button type="button" onClick={onDelete}>
-          <IconDelete width="15" height="18" fill="#1E272E" role="img" aria-labelledby="delete" />
+          <IconDelete width="15" height="18" role="img" aria-labelledby="delete" />
         </button>
       </Util>
     </Title>
